@@ -1,6 +1,6 @@
 menu: menu.o
-	gpp -o menu menu.o
+	g++ -o menu menu.o
 
-menu.o: menu.cpp
-	gpp -c menu.cpp
+menu.o: ./src/menu.cpp
+	g++ -c ./src/menu.cpp
 

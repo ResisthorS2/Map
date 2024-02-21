@@ -1,6 +1,9 @@
 #include <iostream>
-#include <conio.h>
-#include <windows.h>
+#include <thread>
+#include <chrono> // Pour std::chrono::seconds
+#include <stdio.h>
+
+
 
 #define NB_CASES 10
 #define GRIDSIZE 20
@@ -71,12 +74,12 @@ bool verifyMovement(string couleur){
     system("cls");
     if(couleur == BLACK){
         cout << "Vous ne pouvez pas (encore) traverser les murs.";
-        Sleep(500);
+        std::this_thread::sleep_for(std::chrono::seconds(3));
         return false;
     }
     else if(couleur == MAGENTA && key == false){
         cout << MAGENTA << "Vous n'avez pas les autorisations pour entrer ici.\n" << RESET;
-        Sleep(1000);
+        std::this_thread::sleep_for(std::chrono::seconds(3));
         return false;
     }
     else
@@ -126,19 +129,19 @@ void movePlayer(char c){
 void enterRoom() {
     system("cls");
     cout << CYAN << "Vous etes dans la salle " << salles[posY][posX] << endl << RESET;
-    Sleep(1000);
+    std::this_thread::sleep_for(std::chrono::seconds(3));
 }
 
 void enterTech() {
     system("cls");
     cout << YELLOW << "Vous etes dans le bureau des techniciens.\n" << RESET;
-    Sleep(1000);
+    std::this_thread::sleep_for(std::chrono::seconds(3));
 }
 
 void enterSecret(){
     system("cls");
     cout << MAGENTA << "Bienvenue dans la salle secrete.\n" << RESET;
-    Sleep(1000);
+    std::this_thread::sleep_for(std::chrono::seconds(3));
 }
 
 void findEvent() {
@@ -176,7 +179,7 @@ void showLogo() {
     cout << "          | $$                                               \n";
     cout << "          | $$                                               \n";
     cout << "          |__/                                               \n" << RESET;
-    Sleep(2500);
+    std::this_thread::sleep_for(std::chrono::seconds(3));
 }
 
 void showMission() {
@@ -191,8 +194,10 @@ void showMission() {
     char c;
 
     do {
-        c = _getch();
-    } while (c != '\r');
+        char ch;
+        std::cin >> std::noskipws >> c; // Lire un caractère sans ignorer les espaces;
+        std::cout << c << std::endl;
+    } while (c != '\n');
 }
 
 int main() {
@@ -205,7 +210,9 @@ int main() {
         showMap();
 
         cout << "Utilisez les touches WASD pour vous deplacer (Q pour quitter): ";
-        move = toupper(_getch());
+        char ch;
+        std::cin >> std::noskipws >> ch;
+        move = toupper(ch); // Lire un caractère sans ignorer les espaces);
 
         if(move == 'Q')
             break;
@@ -218,7 +225,7 @@ int main() {
 
     system("cls");
     cout << "Merci d'avoir joue !" << endl;
-    Sleep(1000);
+    std::this_thread::sleep_for(std::chrono::seconds(3));
 
     return 0;
 }
