@@ -7,23 +7,24 @@
 #include <string>
 #include <iostream>
 
+using namespace std;
 
-Map::Map()
+Map::Map(const string& fileName)
 {
-	std::ifstream carte("map.txt");
-	std::string lecture;
+	ifstream carte(fileName);
+	string lecture;
 
-	std::getline(carte, lecture);
+	getline(carte, lecture);
 
-		hauteur = std::stoi(lecture);				//Ramasse la hauteur de la map dans le fichier map
+		hauteur = stoi(lecture);				//Ramasse la hauteur de la map dans le fichier map
 
-	std::cout<<"Hauteur : "<<hauteur<<std::endl;
+	cout<<"Hauteur : "<<hauteur<<endl;
 
-	std::getline(carte, lecture);
+	getline(carte, lecture);
 
-		largeur = std::stoi(lecture);				//Ramasse la largeur de la map dans les fichiers
+		largeur = stoi(lecture);				//Ramasse la largeur de la map dans les fichiers
 	
-	std::cout<<"Largeur : "<<largeur<<std::endl;
+	cout<<"Largeur : "<<largeur<<endl;
 
 
 	coordonne = new int*[hauteur];					//Cree le tableau des coordonne de cases de la map
@@ -38,14 +39,14 @@ Map::Map()
 			{
 				if(j==largeur-1)
 				{
-					std::getline(carte, lecture);
+					getline(carte, lecture);
 				}else if(j<largeur-1)
 				{ 
-					std::getline(carte, lecture, '\t');
+					getline(carte, lecture, '\t');
 				}
-				coordonne[i][j] = std::stoi(lecture);
+				coordonne[i][j] = stoi(lecture);
 				
-				//std::cout<<coordonne[i][j]<<" "<<std::endl;
+				//cout<<coordonne[i][j]<<" "<<endl;
 			}
 	}
 
@@ -79,6 +80,7 @@ void Map::enterPiece()
 	coXPiece=coX;
 	coYPiece=coY;
 	orientationPiece=orientation;
+	etatPiece=true;
 }
 
 void Map::exitPiece()
@@ -86,6 +88,62 @@ void Map::exitPiece()
 	coX = coXPiece;
 	coY = coYPiece;
 	orientation = orientationPiece;
+	etatPiece= false;
+}
+
+bool Map::printCase(int x, int y)
+{
+	if(x==coX&&y==coY)
+	{
+		char charOrientation;
+		switch (orientation)
+		{
+		case nord:
+			charOrientation='N';
+			break;
+		
+		case est:
+			charOrientation='E';
+			break;
+
+		case sud:
+			charOrientation='S';
+			break;
+
+		case ouest:
+			charOrientation='O';
+			break;
+
+		default:
+			charOrientation='X';
+			break;
+		}
+		
+		cout<<"["<<" "<<"\033[34m"<<charOrientation<<"\033[0m"<<" "<<"]"<<" ";
+		return true;
+
+	}
+	if(coordonne[y][x]==1)
+	{
+		cout<<"["<<" "<<" "<<" "<<"]"<<" ";
+		return true;
+	}
+	if(coordonne[y][x]==3)
+	{
+		cout<<"["<<" "<<"I"<<" "<<"]"<<" ";
+		return true;		
+	}
+	if(coordonne[y][x]==2)
+	{
+		cout<<"["<<" "<<"P"<<" "<<"]"<<" ";
+		return true;
+	}
+	if(coordonne[y][x]>3)
+	{
+		cout<<"["<<" "<<coordonne[y][x]<<" "<<"]"<<" ";	
+		return true;
+	}else cout<<"      ";
+	return true;
 }
 
 void Map::printMap()
@@ -94,11 +152,32 @@ void Map::printMap()
 	{
 		for(int j=0;j<largeur;j++)
 		{
-			std::cout<<coordonne[i][j]<<" ";
+			printCase(j,i);
 		}
-		std::cout<<std::endl;
+		cout<<endl;
 	}
-	std::cout<<std::endl;
+	cout<<endl;
+	string orientationPrint;
+	switch (orientation)
+	{
+	case nord:
+		orientationPrint="Nord";
+		break;
+	case sud:
+		orientationPrint="Sud";
+		break;
+	case est:
+		orientationPrint="Est";
+		break;
+	case ouest:
+		orientationPrint="Ouest";
+		break;
+	default:
+		orientationPrint="erreur";
+		break;
+	}
+	cout<<"Coordonne X : "<<getCoordonneX()<<"\t Coordonne Y : "<<getCoordonneY()<<"\t Orientation : "<<orientationPrint<<endl;
+		cout<<"============================================================"<<endl;
 }
 
 int Map::getCoordonneX()
@@ -235,9 +314,9 @@ bool Map::moveUp()
 		
 		if(coordonne[coY][coX+1]==1||coordonne[coY][coX+1]==2)	//Il a une case couloir devant lui
 		{
-			std::cout<<"pre"<<coX;
+			cout<<"pre"<<coX;
 			coX++;
-			std::cout<<"post"<<coX<<std::endl;
+			cout<<"post"<<coX<<endl;
 			return true;
 		}
 
@@ -741,41 +820,57 @@ void Map::setOrientation(int SETorientation)
 	orientation=SETorientation;
 }
 
+bool Map::isInPiece()
+{
+	if(etatPiece==true)
+	{
+		return true;
+	} else return false;
+}
+
 int main()
 {
-	Map map;
-	map.printMap();
+	Map map("map.txt");
 	map.setCoordonne(1,0);
 	map.setOrientation(est);
 	map.addCle(4);
+	map.printMap();
 	while(true)
 	{
 		char input;
 		
-		std::cin>>input;
+		cin>>input;
 		
-		switch (input)
+		if(map.isInPiece()==true)
 		{
-		case 'p':
-			std::cout<<"Coordonne X : "<<map.getCoordonneX()<<"\t Coordonne Y : "<<map.getCoordonneY()<<"\t Orientation"<<map.getOrientation()<<std::endl;
-			break;
-		case 'w':
-			map.moveUp();
-			break;
-		
-		case 'a':
-			map.moveLeft();
-			break;
-		
-		case 's':
-			map.moveDown();
-			break;
-		case 'd':
-			map.moveRight();	
-			break;
+			if(input=='s')
+			{
+				map.exitPiece();
+			}
+		}
+		if(map.isInPiece()==false)
+		{
+			switch (input)
+			{
+			case 'p':
+				cout<<"Coordonne X : "<<map.getCoordonneX()<<"\t Coordonne Y : "<<map.getCoordonneY()<<"\t Orientation"<<map.getOrientation()<<endl;
+				break;
+			case 'w':
+				map.moveUp();
+				break;
+			
+			case 'a':
+				map.moveLeft();
+				break;
+			
+			case 's':
+				map.moveDown();
+				break;
+			case 'd':
+				map.moveRight();	
+				break;
+			}
 		}
 		map.printMap();
-		std::cout<<"Coordonne X : "<<map.getCoordonneX()<<"\t Coordonne Y : "<<map.getCoordonneY()<<"\t Orientation : "<<map.getOrientation()<<std::endl;
-		std::cout<<"============================================================"<<std::endl;
 	}
 }
