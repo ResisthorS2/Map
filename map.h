@@ -4,7 +4,9 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include <vector>
+using namespace std;
+
+#include <string>
 
 const int nord=0;
 const int sud=1;
@@ -15,7 +17,7 @@ const int maxRoom=20;
 class Map
 {
 public:
-	Map();
+	Map(const string& fileName);
 	~Map();
 	void setCoordonne(int x, int y);
 	void setOrientation(int orientation);
@@ -32,6 +34,8 @@ public:
 	bool verifCle(int index);		//Permet de vérifier si la pièce est accessible
 	void enterPiece();				//Sert à mes fonction de mouvement et exitPiece
 	void exitPiece();				//Sert à sortir à la position précedente avant de rentrer dans une pièce. Met aussi la bonne orientation
+	bool printCase(int x, int y);
+	bool isInPiece();
 private:
 	int coXPiece;
 	int coYPiece;
@@ -43,6 +47,7 @@ private:
 	int coX;
 	int coY;
 	int cle[maxRoom];				//La cste maxROOM doit être changer si on fait plus de room que celle-si
+	bool etatPiece;					//Sert à empêcher de sortir de la pièce
 };
 
 
