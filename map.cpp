@@ -148,6 +148,7 @@ bool Map::printCase(int x, int y)
 
 void Map::printMap()
 {
+	system("cls");
 	for(int i=0;i<hauteur;i++)
 	{
 		for(int j=0;j<largeur;j++)
