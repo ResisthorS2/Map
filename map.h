@@ -35,7 +35,7 @@ public:
 	void enterPiece();				//Sert à mes fonction de mouvement et exitPiece
 	void exitPiece();				//Sert à sortir à la position précedente avant de rentrer dans une pièce. Met aussi la bonne orientation
 	bool printCase(int x, int y);
-	bool isInPiece();
+	bool isInPiece();				//Verifie si le joueuyr est dans une pièce
 private:
 	int coXPiece;
 	int coYPiece;
